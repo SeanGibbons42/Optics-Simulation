@@ -2,8 +2,10 @@ import tkinter as kk
 
 class Controller():
     def __init__(self, parent):
-        tk.Frame.__init__(self, parent)
-    
+        self.v = views.View()
+        self.m = models.Model()
+
+
 
 if __name__ == "__main__":
     app = tk.Tk()
