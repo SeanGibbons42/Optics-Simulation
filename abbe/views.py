@@ -1,4 +1,7 @@
 import tkinter as tk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import numpy as np
 
 class View():
     def __init__(self, parent):
@@ -8,6 +11,8 @@ class View():
 
         self.diagram = AbbeDiagram(self.mainframe)
         self.diagram.place(relx = 0, rely = 0, relheight = 0.4, relwidth = 0.75)
+        self.img_plot = PlotButton(self.mainframe)
+        self.img_plot.place(relx = 0, rely=0.5, relheight=0.4, relwidth=0.4)
 
         self.init_labels()
         self.init_fields()
@@ -99,7 +104,21 @@ class AbbeDiagram(tk.Canvas):
         """ event handler for window resizing. """
         self.draw_diagram()
 
+class PlotButton(tk.Button):
+    def __init__(self,master):
+        tk.Button.__init__(self, master)
+        self.fig = Figure(figsize=(4,4), dpi=100)
+        self.ax0 = self.fig.add_axes((0.05, 0.05, 0.9, 0.9))
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
+        self.canvas.get_tk_widget().place(relx=0,rely=0, relheight=1, relwidth=1)
+        # self.canvas.show()
 
+    def open_file(self):
+        pass
+
+class PlotLabel():
+    def __init__(self, master):
+        pass
 
 class PlanePlot():
     pass
