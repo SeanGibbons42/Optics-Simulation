@@ -14,12 +14,11 @@ class View():
 
         self.diagram = AbbeDiagram(self.mainframe)
         self.diagram.place(relx = 0, rely = 0, relheight = 0.4, relwidth = 0.75)
-        self.img_plot = PlotButton(self.mainframe)
-        self.img_plot.place(relx = 0, rely=0.5, relheight=0.4, relwidth=0.4)
 
         self.init_labels()
         self.init_fields()
         self.init_buttons()
+        self.create_plots()
 
     def init_buttons(self):
         self.compute_button = tk.Button(self.mainframe, text = "Compute")
@@ -38,6 +37,15 @@ class View():
         self.diam_fld = tk.Entry(self.mainframe)
         self.fcl_fld.place(relx = 0.85, rely = 0.125, relheight=0.05, relwidth = 0.1)
         self.diam_fld.place(relx = 0.85, rely = 0.225, relheight=0.05, relwidth = 0.1)
+
+    def create_plots(self):
+        self.obj_plot = PlotButton(self.mainframe)
+        self.fcl_plot = PlotLabel(self.mainframe)
+        self.img_plot = PlotLabel(self.mainframe)
+        self.obj_plot.place(relx = 0.05, rely=0.5, relheight=0.3, relwidth=0.3)
+        self.fcl_plot.place(relx = 0.35, rely=0.5, relheight=0.3, relwidth=0.3)
+        self.img_plot.place(relx = 0.65, rely=0.5, relheight=0.3, relwidth=0.3)
+
 
 
 class AbbeDiagram(tk.Canvas):
@@ -107,36 +115,11 @@ class AbbeDiagram(tk.Canvas):
         """ event handler for window resizing. """
         self.draw_diagram()
 
-class PlotButton(tk.Frame):
-    def __init__(self,master):
-        tk.Frame.__init__(self, master)
-        self.fig = Figure(figsize=(4,4), dpi=100)
-        self.ax0 = self.fig.add_axes((0.1, 0.1, 0.8, 0.8))
-        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
-        self.canvas.draw()
-        self.canvas.get_tk_widget().place(relx=0,rely=0, relheight=1, relwidth=1)
-
-        self.canvas.get_tk_widget().bind("<Button-1>", self.open_file)
-
-    def open_file(self, event):
-        path = filedialog.askopenfilename(filetypes=[('PNG','*.png')])
-        img = mpimg.imread(path)
-        img = self.rgb2gray(img)
-        self.ax0.imshow(img, cmap=plt.get_cmap("gray"), vmin=0, vmax=1)
-        self.canvas.draw()
-
-    def rgb2gray(self, rgb):
-        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
-
-    def display(self):
-        pass
-
-class PlotLabel():
+class PlotLabel(tk.Frame):
     def __init__(self, master):
-
         tk.Frame.__init__(self, master)
         self.fig = Figure(figsize=(4,4), dpi=100)
-        self.ax0 = self.fig.add_axes((0.1, 0.1, 0.8, 0.8))
+        self.ax0 = self.fig.add_axes((0, 0, 1, 1))
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.draw()
         self.canvas.get_tk_widget().place(relx=0,rely=0, relheight=1, relwidth=1)
@@ -147,6 +130,26 @@ class PlotLabel():
 
     def clear(self):
         self.ax0.clear()
+
+    def rgb2gray(self, rgb):
+        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+
+class PlotButton(PlotLabel):
+    def __init__(self,master):
+        PlotLabel.__init__(self, master)
+        self.canvas.get_tk_widget().bind("<Button-1>", self.open_file)
+
+    def open_file(self, event):
+        path = filedialog.askopenfilename(filetypes=[('PNG','*.png')])
+        img = mpimg.imread(path)
+        img = self.rgb2gray(img)
+        self.ax0.imshow(img, cmap=plt.get_cmap("gray"), vmin=0, vmax=1)
+        self.canvas.draw()
+
+
+
+    def display(self):
+        pass
 
 class PlanePlot():
     pass

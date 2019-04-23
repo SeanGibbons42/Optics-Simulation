@@ -5,7 +5,7 @@ import models
 class Controller():
     """
     Class Controller integrates the UI (View) with the
-    data/calculations (Model). 
+    data/calculations (Model).
     """
     def __init__(self, parent):
         self.v = views.View(parent)
