@@ -1,6 +1,9 @@
 import tkinter as tk
+from tkinter import filedialog
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.image as mpimg
+import matplotlib.pyplot as plt
 import numpy as np
 
 class View():
@@ -67,7 +70,7 @@ class AbbeDiagram(tk.Canvas):
         lens_xend = self.x_convert(0.50+0.025)
         self.create_oval(lens_xstart, top_y, lens_xend, bottom_y, fill = "#0abee9")
 
-        #Draw focal place()
+        #Draw focal plane
         self.create_line(fcl_x, top_y, fcl_x, bottom_y, dash=20, width=5)
         self.create_line(img_x, top_y, img_x, bottom_y, width=10)
 
@@ -104,21 +107,46 @@ class AbbeDiagram(tk.Canvas):
         """ event handler for window resizing. """
         self.draw_diagram()
 
-class PlotButton(tk.Button):
+class PlotButton(tk.Frame):
     def __init__(self,master):
-        tk.Button.__init__(self, master)
+        tk.Frame.__init__(self, master)
         self.fig = Figure(figsize=(4,4), dpi=100)
-        self.ax0 = self.fig.add_axes((0.05, 0.05, 0.9, 0.9))
+        self.ax0 = self.fig.add_axes((0.1, 0.1, 0.8, 0.8))
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
+        self.canvas.draw()
         self.canvas.get_tk_widget().place(relx=0,rely=0, relheight=1, relwidth=1)
-        # self.canvas.show()
 
-    def open_file(self):
+        self.canvas.get_tk_widget().bind("<Button-1>", self.open_file)
+
+    def open_file(self, event):
+        path = filedialog.askopenfilename(filetypes=[('PNG','*.png')])
+        img = mpimg.imread(path)
+        img = self.rgb2gray(img)
+        self.ax0.imshow(img, cmap=plt.get_cmap("gray"), vmin=0, vmax=1)
+        self.canvas.draw()
+
+    def rgb2gray(self, rgb):
+        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
+
+    def display(self):
         pass
 
 class PlotLabel():
     def __init__(self, master):
-        pass
+
+        tk.Frame.__init__(self, master)
+        self.fig = Figure(figsize=(4,4), dpi=100)
+        self.ax0 = self.fig.add_axes((0.1, 0.1, 0.8, 0.8))
+        self.canvas = FigureCanvasTkAgg(self.fig, master=self)
+        self.canvas.draw()
+        self.canvas.get_tk_widget().place(relx=0,rely=0, relheight=1, relwidth=1)
+
+    def display(self, img):
+        self.ax0.imshow(img, cmap=plt.get_cmap('gray'), vmin=0, vmax=1)
+        self.canvas.draw()
+
+    def clear(self):
+        self.ax0.clear()
 
 class PlanePlot():
     pass
