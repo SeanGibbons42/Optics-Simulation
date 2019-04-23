@@ -65,6 +65,7 @@ class AbbeDiagram(tk.Canvas):
         self.draw_dimensionline(fcl_x, img_x, y, dim_height)
 
     def draw_dimensionline(self, start, end, y, height):
+        """ Draws horizontal dimension arrows """
         mid_y = self.y_convert(0.5)
         offset = self.x_convert(0.01)
         self.create_line(start, y, end, y, arrow="both", width=5)
@@ -85,6 +86,7 @@ class AbbeDiagram(tk.Canvas):
     def on_resize(self, event):
         """ event handler for window resizing. """
         self.draw_diagram()
+
 
 
 class PlanePlot():
