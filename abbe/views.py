@@ -7,26 +7,37 @@ class View():
         self.mainframe.place(relx = 0, rely = 0, relheight = 1, relwidth = 1)
 
         self.diagram = AbbeDiagram(self.mainframe)
-        self.diagram.place(relx = 0, rely = 0, relheight = 0.4, relwidth = 1)
+        self.diagram.place(relx = 0, rely = 0, relheight = 0.4, relwidth = 0.75)
+
+        self.init_labels()
+        self.init_fields()
+        self.init_buttons()
 
     def init_buttons(self):
-        #draw buttons
-        pass
+        self.compute_button = tk.Button(self.mainframe, text = "Compute")
+        self.compute_button.place(relx = 0.8, rely = 0.3, relwidth = 0.1, relheight = 0.1)
 
     def init_labels(self):
         #draw text labels
-        pass
+        self.fcl_lbl = tk.Label(self.mainframe, text="Focal Length")
+        self.diam_lbl = tk.Label(self.mainframe, text="Lens Diameter")
+        self.fcl_lbl.place(relx = 0.75, rely = 0.1, relheight=0.1, relwidth = 0.1)
+        self.diam_lbl.place(relx = 0.75, rely = 0.2, relheight=0.1, relwidth = 0.1)
 
     def init_fields(self):
         #draw text input fields
-        pass
+        self.fcl_fld = tk.Entry(self.mainframe)
+        self.diam_fld = tk.Entry(self.mainframe)
+        self.fcl_fld.place(relx = 0.85, rely = 0.125, relheight=0.05, relwidth = 0.1)
+        self.diam_fld.place(relx = 0.85, rely = 0.225, relheight=0.05, relwidth = 0.1)
+
 
 class AbbeDiagram(tk.Canvas):
     """Class AbbeDiagram: Draws a basic diagram explaining the lens setup"""
 
     def __init__(self, parent):
         #call to parent constructor
-        tk.Canvas.__init__(self, parent)
+        tk.Canvas.__init__(self, parent, bd=3)
         #event binding: we want to re-draw the diagram when the
         self.bind("<Configure>", self.on_resize)
 
@@ -60,17 +71,18 @@ class AbbeDiagram(tk.Canvas):
         y = self.y_convert(0.85)
         dim_height = self.y_convert(0.1)
         lens_x = (lens_xstart+lens_xend)//2
-        self.draw_dimensionline(obj_x, lens_x, y, dim_height)
-        self.draw_dimensionline(lens_x, fcl_x, y, dim_height)
-        self.draw_dimensionline(fcl_x, img_x, y, dim_height)
+        self.draw_dimensionline(obj_x, lens_x, y, dim_height, text = "2f")
+        self.draw_dimensionline(lens_x, fcl_x, y, dim_height, text = "f")
+        self.draw_dimensionline(fcl_x, img_x, y, dim_height, text = "f")
 
-    def draw_dimensionline(self, start, end, y, height):
+    def draw_dimensionline(self, start, end, y, height, text = ""):
         """ Draws horizontal dimension arrows """
         mid_y = self.y_convert(0.5)
         offset = self.x_convert(0.01)
         self.create_line(start, y, end, y, arrow="both", width=5)
         self.create_line(start, y-height//2, start, y+height//2, width=3)
         self.create_line(end, y-height//2, end, y+height//2, width=3)
+        self.create_text((start+end)//2, y+30, text=text, font="helvetica 30")
 
     def x_convert(self, relx):
         """
