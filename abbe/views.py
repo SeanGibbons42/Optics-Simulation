@@ -1,8 +1,6 @@
 import tkinter as tk
-from tkinter import filedialog
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -39,7 +37,7 @@ class View():
         self.diam_fld.place(relx = 0.85, rely = 0.225, relheight=0.05, relwidth = 0.1)
 
     def create_plots(self):
-        self.obj_plot = PlotButton(self.mainframe)
+        self.obj_plot = PlotLabel(self.mainframe)
         self.fcl_plot = PlotLabel(self.mainframe)
         self.img_plot = PlotLabel(self.mainframe)
         self.obj_plot.place(relx = 0.05, rely=0.5, relheight=0.3, relwidth=0.3)
@@ -98,7 +96,7 @@ class AbbeDiagram(tk.Canvas):
         self.create_line(start, y, end, y, arrow="both", width=5)
         self.create_line(start, y-height//2, start, y+height//2, width=3)
         self.create_line(end, y-height//2, end, y+height//2, width=3)
-        self.create_text((start+end)//2, y+30, text=text, font="helvetica 30")
+        self.create_text((start+end)//2, y+30, text=text, font="helvetica 20")
 
     def x_convert(self, relx):
         """
@@ -120,6 +118,7 @@ class PlotLabel(tk.Frame):
         tk.Frame.__init__(self, master)
         self.fig = Figure(figsize=(4,4), dpi=100)
         self.ax0 = self.fig.add_axes((0, 0, 1, 1))
+        self.ax0.axis("off")
         self.canvas = FigureCanvasTkAgg(self.fig, master=self)
         self.canvas.draw()
         self.canvas.get_tk_widget().place(relx=0,rely=0, relheight=1, relwidth=1)
@@ -130,26 +129,3 @@ class PlotLabel(tk.Frame):
 
     def clear(self):
         self.ax0.clear()
-
-    def rgb2gray(self, rgb):
-        return np.dot(rgb[...,:3], [0.2989, 0.5870, 0.1140])
-
-class PlotButton(PlotLabel):
-    def __init__(self,master):
-        PlotLabel.__init__(self, master)
-        self.canvas.get_tk_widget().bind("<Button-1>", self.open_file)
-
-    def open_file(self, event):
-        path = filedialog.askopenfilename(filetypes=[('PNG','*.png')])
-        img = mpimg.imread(path)
-        img = self.rgb2gray(img)
-        self.ax0.imshow(img, cmap=plt.get_cmap("gray"), vmin=0, vmax=1)
-        self.canvas.draw()
-
-
-
-    def display(self):
-        pass
-
-class PlanePlot():
-    pass
