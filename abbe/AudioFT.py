@@ -5,6 +5,8 @@ import matplotlib.animation as animation
 import time
 import threading
 
+
+
 class CubeAudio(object):
     def __init__(self, chunksize=2**10, rate=16000, trim=20):
 
@@ -116,8 +118,6 @@ def fouriergraph():
 
     x = f.xvalues()  # get the x axis for the plot
 
-    r = np.array(f.readrawdata())
-    rawx = range(len(r))
 
     def animate(i):
         y = f.readfourier()  # pull some y values
@@ -133,6 +133,32 @@ def fouriergraph():
 
     # run our animation with pauses of length interval
     ani = animation.FuncAnimation(fig, animate, interval=1000 / 60)
+    plt.show()
+
+def audioimage():
+    fig,(ax1,ax2) = plt.subplots(2,1)  # Create a matplotlib figure
+    # add a subplot that we can animate (Constantly Update)
+
+    f = CubeAudio()  # start a cubeaudio instance
+
+    x = f.xvalues()  # get the x axis for the plot
+    size = len(f.readrawdata())
+    image = np.zeros((size,size))
+    def animate(i):
+        for i in range(len(image)-1):
+            image[-1-i] = image[-2-i]
+        image[0] = np.array(np.log(np.abs(f.readrawdata())))
+
+        r = np.array(f.readrawdata())
+        rawx = range(len(r))
+        # reset the plot then plot again
+        ax1.clear()
+        ax2.clear()
+        ax1.imshow(image,vmin=0,vmax=20)
+        ax2.imshow(np.array(np.fft.fft2(image),dtype=np.float32))
+
+    # run our animation with pauses of length interval
+    ani = animation.FuncAnimation(fig, animate, interval=1)
     plt.show()
 
 fouriergraph()
