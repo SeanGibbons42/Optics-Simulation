@@ -127,7 +127,7 @@ def fouriergraph():
         ax1.clear()
         ax2.clear()
         ax1.set_ylim([0, 10**10.5])
-        ax2.set_ylim(-10**8,10**8)
+        ax2.set_ylim(-5*10**8,5*10**8)
         ax1.plot(x, y)
         ax2.plot(rawx,r)
 
