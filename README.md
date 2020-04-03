@@ -20,3 +20,6 @@ python3 -m pip install jupyter
 ```
 
 Then, navigate to this directory using command prompt or terminal, and run the command `jupyter notebook`. You should be redirected the jupyter app running in your browser. From here you can open the file `fft_fun.ipynb`.
+
+Alternativly, access this notebook on Microsoft Azure's notebook service:
+https://notebooks.azure.com/seangibbons42/projects/optics-simulation
