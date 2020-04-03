@@ -9,17 +9,17 @@ class Model():
     def __init__(self):
         self.obj_pic = None
 
-    def fft(a):
-        return np.fft.fft2(a)
+    def fft2(self, a):
+        print(a)
+        a = np.array(np.fft.fft2(a), dtype=np.float32)
+        return np.abs(a)
 
     def load_img(self, path):
-
         img = mpimg.imread(path)
         img = self.rgb2gray(img)
+        self.obj_pic = img
         return img
 
-    def get_fcl(self, obj):
-        pass
 
     def get_image(self, fcl):
         pass
